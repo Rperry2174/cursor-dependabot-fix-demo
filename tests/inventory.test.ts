@@ -81,26 +81,32 @@ describe('inventory + orders', () => {
   });
 });
 
-describe('express@4 response helpers', () => {
-  it('exposes app.del and uses res.json(status, body) signature', () => {
+describe('express@5 response helpers', () => {
+  it('exposes app.delete and uses status().json / sendStatus', () => {
     const app = createApp();
-    // Express 4 registers delete via app.del
-    expect(typeof (app as any).del).toBe('function');
+    expect(typeof app.delete).toBe('function');
 
     const calls: any[] = [];
     const res: any = {
-      json(...args: any[]) {
-        calls.push(['json', ...args]);
+      status(code: number) {
+        calls.push(['status', code]);
         return res;
       },
-      send(...args: any[]) {
-        calls.push(['send', ...args]);
+      json(body: unknown) {
+        calls.push(['json', body]);
+        return res;
+      },
+      sendStatus(code: number) {
+        calls.push(['sendStatus', code]);
         return res;
       },
     };
     sendJson(res, 201, { ok: true });
     sendEmpty(res, 404);
-    expect(calls[0]).toEqual(['json', 201, { ok: true }]);
-    expect(calls[1]).toEqual(['send', 404]);
+    expect(calls).toEqual([
+      ['status', 201],
+      ['json', { ok: true }],
+      ['sendStatus', 404],
+    ]);
   });
 });
