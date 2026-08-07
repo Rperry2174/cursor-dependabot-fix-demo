@@ -34,3 +34,19 @@ If alerts/updates are not already on:
 ## Intentionally outdated packages
 
 Pinned exact versions (no `^`) of popular packages whose major upgrades commonly need code fixes: `express`, `zod`, `uuid`, `node-fetch`, `chalk`, `axios`, `glob`, `lodash`, `moment`, `qs`, plus older `jest` / `typescript` toolchains.
+
+
+## GitHub Actions CI
+
+The workflow file intended for this demo is checked in as [`.github/ci.workflow.yml`](.github/ci.workflow.yml) (same content as `.github/workflows/ci.yml`).
+
+The bootstrap OAuth token lacked the `workflow` scope, so GitHub rejected pushes that create `.github/workflows/*`. To enable CI:
+
+```bash
+gh auth refresh -h github.com -s workflow
+mkdir -p .github/workflows
+cp .github/ci.workflow.yml .github/workflows/ci.yml
+git add .github/workflows/ci.yml && git commit -m "ci: enable GitHub Actions" && git push
+```
+
+Until then, validate locally with `npm ci && npm test && npm run build`.
