@@ -4,17 +4,14 @@ import axios from 'axios';
 import qs from 'qs';
 
 /**
- * Express 4-only response signatures.
- * Express 5 removes res.json(status, body) / res.send(status).
+ * Express 5 response helpers (status then body).
  */
 export function sendJson(res: Response, status: number, body: unknown): Response {
-  // Express 4 allowed (status, body); Express 5 does not
-  return (res as any).json(status, body);
+  return res.status(status).json(body);
 }
 
 export function sendEmpty(res: Response, status: number): Response {
-  // Express 4 allowed res.send(status); Express 5 requires sendStatus
-  return (res as any).send(status);
+  return res.sendStatus(status);
 }
 
 /**

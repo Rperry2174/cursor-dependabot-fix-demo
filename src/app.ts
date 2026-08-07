@@ -26,8 +26,7 @@ export function createApp() {
   });
 
   app.get('/listings/:id', (req, res) => {
-    // Express 4 req.param(name) — removed in Express 5
-    const id = (req as any).param('id') as string;
+    const id = req.params.id;
     const listing = getListing(id);
     if (!listing) {
       return sendEmpty(res, 404);
@@ -35,9 +34,8 @@ export function createApp() {
     return sendJson(res, 200, { listing });
   });
 
-  // Express 4 app.del() — removed in Express 5 (use app.delete)
-  (app as any).del('/listings/:id', (req: Request, res: Response) => {
-    const id = (req as any).param('id') as string;
+  app.delete('/listings/:id', (req, res) => {
+    const id = req.params.id;
     const listing = delist(id);
     if (!listing) {
       return sendEmpty(res, 404);
@@ -55,7 +53,7 @@ export function createApp() {
   });
 
   app.get('/orders/:id', (req, res) => {
-    const id = (req as any).param('id') as string;
+    const id = req.params.id;
     const order = getOrder(id);
     if (!order) {
       return sendEmpty(res, 404);
@@ -63,8 +61,8 @@ export function createApp() {
     return sendJson(res, 200, { order });
   });
 
-  (app as any).del('/orders/:id', (req: Request, res: Response) => {
-    const id = (req as any).param('id') as string;
+  app.delete('/orders/:id', (req, res) => {
+    const id = req.params.id;
     const order = cancelOrder(id);
     if (!order) {
       return sendEmpty(res, 404);
